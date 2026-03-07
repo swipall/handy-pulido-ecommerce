@@ -17,7 +17,7 @@ export function LoginButton({ isLoggedIn, ...props }: LoginButtonProps) {
     return (
         <div>
             <div className="hidden md:block">
-                <button className="" {...props} aria-disabled={isPending}
+                <button className="bg-pink-400 hover:bg-pink-600 dark:bg-pink-900 dark:text-white  hover:bg-pink-600 font-bold" {...props} aria-disabled={isPending}
                     onClick={() => {
                         if (isLoggedIn) {
                             startTransition(async () => {

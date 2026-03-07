@@ -33,7 +33,7 @@ export function ProductCard({product}: ProductCardProps) {
                 )}
             </div>
             <div className="p-4 space-y-2">
-                <h3 className="font-medium line-clamp-2 group-hover:text-primary transition-colors">
+                <h3 className="font-medium line-clamp-2 text-xs group-hover:text-primary transition-colors truncate">
                     {product.name}
                 </h3>
                 <Suspense fallback={<div className="h-8 w-36 rounded bg-muted"></div>}>
