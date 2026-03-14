@@ -1,13 +1,14 @@
-# Estructura de Página de Inicio (Home)
+# Estructura de Páginas CMS
 
-## 📋 Descripción General
+## Descripción General
 
-La página de inicio está compuesta por bloques modulares (posts CMS) que se pueden agregar, reordenar y personalizar. Cada bloque tiene una categoría específica que define su tipo y comportamiento.
+Las páginas del sitio se construyen mediante bloques modulares representados como posts CMS. Cada bloque define su tipo a través de categorías y se relaciona con una página raíz mediante el campo `parent`. Los bloques se renderizan en orden ascendente según el campo `ordering`.
 
 ---
 
-## 🏠 Post Raíz: Página de Inicio
+# Página de Inicio
 
+## Post Raíz
 ```json
 {
   "slug": "ecommerce-home",
@@ -20,28 +21,27 @@ La página de inicio está compuesta por bloques modulares (posts CMS) que se pu
 }
 ```
 
-**Propósito:** Contenedor principal de la página. Este post actúa como referencia para todos los bloques secundarios.
+Actúa como contenedor principal. Todos los bloques de la página de inicio apuntan a este post como `parent`.
 
 ---
 
-## 🎨 Tipos de Bloques Disponibles
+## Tipos de Bloques
 
 | Tipo | Slug | Descripción | Uso |
 |------|------|-------------|-----|
-| **Banner** | `home-banner` | Imagen grande con título y enlace | Promociones destacadas |
-| **Banner Slider** | `home-banner-slider` | Carrusel de banners (completos o simples) | Múltiples promociones |
-| **Categorías** | `home-categories` | Grilla de categorías con imágenes | Navegación visual |
-| **Productos** | `home-products-by-category` | Lista de productos de una categoría | Mostrar stock destacado |
-| **HTML Libre** | `home-html` | HTML personalizado | Anuncios, promos, dividers |
+| Banner | `home-banner` | Imagen grande con título y enlace | Promociones destacadas |
+| Banner Slider | `home-banner-slider` | Carrusel de banners (completos o simples) | Múltiples promociones |
+| Categorías | `home-categories` | Grilla de categorías con imágenes | Navegación visual |
+| Productos | `home-products-by-category` | Lista de productos de una categoría | Mostrar stock destacado |
+| HTML libre | `home-html` | HTML personalizado | Anuncios, promos, dividers |
 
 ---
 
-## 🔧 Estructura de Cada Bloque
+## Estructura de Cada Bloque
 
-### 1️⃣ Banner
+### Banner
 
-**Slug:** `home-banner` | **Ordering:** 1, 2, 3... (orden de aparición)
-
+**Slug:** `home-banner`
 ```json
 {
   "slug": "ecommerce-home-banner-1",
@@ -62,18 +62,17 @@ La página de inicio está compuesta por bloques modulares (posts CMS) que se pu
 }
 ```
 
-**Campos importantes:**
+Campos importantes:
+- `title`: Título principal visible en el banner
 - `body`: JSON con `subtitle` (texto secundario) y `autoplay` (rotación automática)
 - `featured_image`: Imagen principal (recomendado: 1920x600px)
-- `link`: Destino al hacer click
-- `title`: Título principal
+- `link`: Destino al hacer clic
 
 ---
 
-### 2️⃣ Categorías Destacadas
+### Categorías Destacadas
 
-**Slug:** `home-categories` | **Típicamente:** Ordering 2
-
+**Slug:** `home-categories`
 ```json
 {
   "slug": "ecommerce-home-categories",
@@ -92,17 +91,16 @@ La página de inicio está compuesta por bloques modulares (posts CMS) que se pu
 }
 ```
 
-**Campos importantes:**
+Campos importantes:
 - `body`: JSON con array `items`:
-  - `slug`: Slug de la categoría (navegación)
+  - `slug`: Slug de la categoría (usado para navegación)
   - `image`: Imagen de la categoría (recomendado: 300x300px)
 
 ---
 
-### 3️⃣ Productos por Categoría
+### Productos por Categoría
 
-**Slug:** `home-products-by-category` | **Típicamente:** Ordering 3+
-
+**Slug:** `home-products-by-category`
 ```json
 {
   "slug": "ecommerce-home-products-maquillaje",
@@ -121,20 +119,19 @@ La página de inicio está compuesta por bloques modulares (posts CMS) que se pu
 }
 ```
 
-**Campos importantes:**
+Campos importantes:
 - `body`: JSON con:
   - `category_slug`: Slug de la categoría a filtrar
-  - `limit`: Cantidad de productos (4-12 recomendado)
-  - `order`: Orden (`popular`, `new`, `price_asc`, `price_desc`)
+  - `limit`: Cantidad de productos a mostrar (recomendado: 4–12)
+  - `order`: Criterio de ordenamiento (`popular`, `new`, `price_asc`, `price_desc`)
 
 ---
 
-### 4️⃣ Banner Slider (Contenedor)
+### Banner Slider
 
-**Slug:** `home-banner-slider` | **Típicamente:** Ordering 2-3
+**Slug:** `home-banner-slider`
 
-Este es un bloque **contenedor** que agrupa múltiples items tipo banner que se renderizan en un carrusel.
-
+Bloque contenedor que agrupa múltiples items renderizados como carrusel. Los items son posts hijos con `parent` apuntando a este bloque.
 ```json
 {
   "slug": "ecommerce-home-banner-slider-main",
@@ -153,19 +150,16 @@ Este es un bloque **contenedor** que agrupa múltiples items tipo banner que se 
 }
 ```
 
-**Campos importantes:**
+Campos importantes:
 - `body`: JSON con configuración del slider:
   - `autoplay` (boolean): Rotación automática
-  - `duration` (number): Tiempo en ms entre cambios (default 5000)
+  - `duration` (number): Tiempo en ms entre cambios (default: 5000)
 
----
+#### Item de Slider — Banner Completo
 
-### 4.1 Items del Slider - Banner Completo
+**Slug:** personalizado | **Parent:** `ecommerce-home-banner-slider-main`
 
-**Slug:** Personalizado | **Parent:** `ecommerce-home-banner-slider-main` | **Ordering:** 1, 2, 3...
-
-Reutiliza la estructura de `home-banner` pero como child del slider:
-
+Reutiliza la estructura de `home-banner` como hijo del slider. Muestra título, descripción, imagen y botón de acción.
 ```json
 {
   "slug": "ecommerce-home-banner-slider-item-1",
@@ -186,22 +180,19 @@ Reutiliza la estructura de `home-banner` pero como child del slider:
 }
 ```
 
-**Campos importantes:**
-- `title`: Título principal (visible en el banner)
-- `excerpt`: Subtítulo o descripción (visible en el banner)
-- `body`: JSON con `subtitle` (texto secundario adicional)
+Campos importantes:
+- `title`: Título principal visible en el banner
+- `excerpt`: Subtítulo o descripción visible
+- `body`: JSON con `subtitle` (texto adicional)
 - `featured_image`: Imagen principal (1920x600px)
-- `link`: Destino al hacer click
-- `categories`: Debe incluir `home-banner` para identificar como banner completo
+- `link`: Destino al hacer clic
+- `categories`: Debe incluir `home-banner`
 
----
+#### Item de Slider — Imagen Simple
 
-### 4.2 Items del Slider - Imagen Simple
+**Slug:** personalizado | **Parent:** `ecommerce-home-banner-slider-main`
 
-**Slug:** Personalizado | **Parent:** `ecommerce-home-banner-slider-main` | **Ordering:** 1, 2, 3...
-
-Solo imagen, opcionalmente con link (sin botón visible):
-
+Solo imagen, opcionalmente con link. No muestra texto ni botón.
 ```json
 {
   "slug": "ecommerce-home-banner-slider-item-promo",
@@ -222,18 +213,17 @@ Solo imagen, opcionalmente con link (sin botón visible):
 }
 ```
 
-**Campos importantes:**
+Campos importantes:
 - `featured_image`: Imagen principal (1920x600px)
-- `link`: URL destino (opcional, si está presente toda la imagen es clickeable)
-- `title`, `excerpt`, `body`: Todos null/vacíos
-- `categories`: Debe incluir `home-banner-slider-item-image` para identificar como imagen simple
+- `link`: Opcional. Si está presente, toda la imagen es clickeable
+- `title`, `excerpt`, `body`: Deben ser `null`
+- `categories`: Debe incluir `home-banner-slider-item-image`
 
 ---
 
-### 5️⃣ HTML Personalizado
+### HTML Personalizado
 
-**Slug:** `home-html` | **Típicamente:** Ordering final
-
+**Slug:** `home-html`
 ```json
 {
   "slug": "ecommerce-home-html-promo",
@@ -252,51 +242,222 @@ Solo imagen, opcionalmente con link (sin botón visible):
 }
 ```
 
-**Campos importantes:**
-- `body`: HTML puro (sin escapar)
-- `title`: Opcional (puede ser null)
-- Uso: Dividers, banners, texto libre, widgets personalizados
+Campos importantes:
+- `body`: HTML puro sin escapar
+- `title`: Opcional, puede ser `null`
+- Uso típico: dividers, banners promocionales, widgets personalizados
+
+> El contenido del `body` no se sanitiza. Evitar incluir HTML de fuentes no confiables.
 
 ---
 
-## 📐 Orden Recomendado
-
+## Orden Recomendado
 ```
-ordering: 1 → Banner (Hero) - único
-ordering: 2 → Banner Slider (contenedor con items)
-            ├─ Item 1: Banner completo o imagen simple
-            ├─ Item 2: Banner completo o imagen simple
-            └─ Item N: ...
-ordering: 3 → Categorías destacadas
-ordering: 4 → Productos - Categoría 1
-ordering: 5 → HTML - Promo
-ordering: 6 → Productos - Categoría 2
-ordering: 7+ → Más bloques según necesites
+ordering: 1  → Banner (hero único)
+ordering: 2  → Banner Slider (contenedor)
+              ├─ Item 1: banner completo o imagen simple
+              ├─ Item 2: banner completo o imagen simple
+              └─ Item N: ...
+ordering: 3  → Categorías destacadas
+ordering: 4  → Productos — Categoría 1
+ordering: 5  → HTML — Promo
+ordering: 6  → Productos — Categoría 2
+ordering: 7+ → Bloques adicionales
 ```
 
 ---
 
-## ✅ Checklist de Validación
+## Checklist de Validación
 
-**Bloque contenedor `home-banner-slider`:**
-- [ ] Tiene `parent: { slug: "ecommerce-home", title: "Inicio" }`
-- [ ] El `body` solo contiene configuración (`autoplay`, `duration`)
-- [ ] Las `categories` contienen `home-block` + `home-banner-slider`
+Bloque contenedor `home-banner-slider`:
+- [ ] `parent.slug` apunta a `ecommerce-home`
+- [ ] `body` solo contiene configuración del slider (`autoplay`, `duration`)
+- [ ] `categories` incluye `home-block` y `home-banner-slider`
 
-**Items del slider (children):**
-- [ ] Cada item tiene `parent: { slug: "ecommerce-home-banner-slider-main", ... }`
-- [ ] Los items están ordenados por `ordering` secuencial
+Items del slider (hijos):
+- [ ] `parent.slug` apunta a `ecommerce-home-banner-slider-main`
+- [ ] `ordering` es secuencial dentro del contenedor
 - [ ] Items tipo `home-banner`: incluyen `title`, `featured_image`, `link` y category `home-banner`
-- [ ] Items tipo `home-banner-slider-item-image`: solo `featured_image` + opcionalmente `link`, category `home-banner-slider-item-image`
-- [ ] Todas las imágenes existen y tienen peso adecuado (1920x600px)
+- [ ] Items tipo `home-banner-slider-item-image`: solo `featured_image` y opcionalmente `link`, con category `home-banner-slider-item-image`; `title`, `excerpt` y `body` en `null`
+- [ ] Todas las imágenes existen y tienen las dimensiones adecuadas (1920x600px)
 
 ---
 
-## 📝 Notas
+## Notas
 
-- Los bloques se renderizan por `ordering` de menor a mayor
-- Los items dentro de un slider se renderizan por `ordering` dentro de su contenedor
-- Puedes agregar múltiples bloques del mismo tipo
-- Las imágenes van en CDN externo
-- El HTML personalizado no se sanitiza (cuidado con inyecciones)
-- **Arquitectura parent-child**: El slider puede contener items de diferentes tipos (banners completos e imágenes simples)
+- Los bloques se renderizan en orden ascendente por `ordering`.
+- Los items dentro de un slider se ordenan por `ordering` relativo a su contenedor.
+- Se pueden agregar múltiples bloques del mismo tipo.
+- Las imágenes se sirven desde CDN externo.
+- El slider soporta arquitectura mixta: puede combinar banners completos e imágenes simples en el mismo contenedor.
+
+---
+
+# Footer
+
+## Post Raíz
+```json
+{
+  "slug": "ecommerce-footer",
+  "title": "Footer",
+  "categories": [
+    { "name": "Page", "slug": "page" },
+    { "name": "Footer", "slug": "footer" }
+  ],
+  "parent": null
+}
+```
+
+Actúa como contenedor principal. Todos los bloques de columnas del footer apuntan a este post como `parent`.
+
+A diferencia del home, todos los bloques del footer son hojas (sin hijos): toda la información de cada columna vive en su propio campo `body`.
+
+---
+
+## Tipos de Bloques
+
+| Tipo | Slug | Descripción |
+|------|------|-------------|
+| Links simples | `footer-links` | Lista de links con URLs explícitas |
+| Categorías | `footer-categories` | Links a categorías del catálogo (por slug) |
+| Redes sociales | `footer-social` | Íconos y links a perfiles de redes sociales |
+
+---
+
+## Estructura de Cada Bloque
+
+### Links Simples
+
+**Slug:** `footer-links`
+```json
+{
+  "slug": "ecommerce-footer-links-empresa",
+  "title": "Empresa",
+  "excerpt": null,
+  "body": "{\"items\": [{\"label\": \"Quiénes somos\", \"link\": \"/nosotros\"}, {\"label\": \"Contacto\", \"link\": \"/contacto\"}, {\"label\": \"Aviso de privacidad\", \"link\": \"/privacidad\"}]}",
+  "categories": [
+    { "name": "Footer", "slug": "footer-block" },
+    { "name": "Links", "slug": "footer-links" }
+  ],
+  "link": null,
+  "featured_image": null,
+  "ordering": 1,
+  "parent": {
+    "slug": "ecommerce-footer",
+    "title": "Footer"
+  }
+}
+```
+
+Campos importantes:
+- `title`: Encabezado visible de la columna
+- `body`: JSON con array `items`:
+  - `label`: Texto visible del link
+  - `link`: URL destino (relativa o absoluta)
+
+---
+
+### Categorías
+
+**Slug:** `footer-categories`
+```json
+{
+  "slug": "ecommerce-footer-categories-shop",
+  "title": "Tienda",
+  "excerpt": null,
+  "body": "{\"items\": [{\"label\": \"Maquillaje\", \"slug\": \"maquillaje\"}, {\"label\": \"Perfumes\", \"slug\": \"perfumes\"}, {\"label\": \"Skincare\", \"slug\": \"skincare\"}]}",
+  "categories": [
+    { "name": "Footer", "slug": "footer-block" },
+    { "name": "Categorías", "slug": "footer-categories" }
+  ],
+  "link": null,
+  "featured_image": null,
+  "ordering": 2,
+  "parent": {
+    "slug": "ecommerce-footer",
+    "title": "Footer"
+  }
+}
+```
+
+Campos importantes:
+- `title`: Encabezado visible de la columna
+- `body`: JSON con array `items`:
+  - `label`: Texto visible
+  - `slug`: Slug de la categoría. El frontend construye la URL (ej: `/categoria/maquillaje`)
+
+> A diferencia de `footer-links`, este bloque referencia entidades del catálogo por slug. La URL la construye el renderer, no el editor de contenido.
+
+---
+
+### Redes Sociales
+
+**Slug:** `footer-social`
+```json
+{
+  "slug": "ecommerce-footer-social",
+  "title": "Síguenos",
+  "excerpt": null,
+  "body": "{\"items\": [{\"network\": \"instagram\", \"url\": \"https://instagram.com/mitienda\", \"label\": \"@mitienda\"}, {\"network\": \"facebook\", \"url\": \"https://facebook.com/mitienda\", \"label\": \"Mi Tienda\"}, {\"network\": \"tiktok\", \"url\": \"https://tiktok.com/@mitienda\", \"label\": \"@mitienda\"}]}",
+  "categories": [
+    { "name": "Footer", "slug": "footer-block" },
+    { "name": "Social", "slug": "footer-social" }
+  ],
+  "link": null,
+  "featured_image": null,
+  "ordering": 3,
+  "parent": {
+    "slug": "ecommerce-footer",
+    "title": "Footer"
+  }
+}
+```
+
+Campos importantes:
+- `title`: Encabezado visible de la sección
+- `body`: JSON con array `items`:
+  - `network`: Identificador de la red. El renderer lo mapea al ícono correspondiente. Valores reconocidos: `instagram`, `facebook`, `tiktok`, `twitter`, `youtube`, `pinterest`, `whatsapp`
+  - `url`: URL completa del perfil
+  - `label`: Handle o texto alternativo visible
+
+---
+
+## Orden Recomendado
+```
+ordering: 1 → footer-categories  → "Tienda"
+ordering: 2 → footer-links       → "Empresa"
+ordering: 3 → footer-links       → "Ayuda"
+ordering: 4 → footer-social      → "Síguenos"
+```
+
+Los bloques se renderizan de izquierda a derecha según `ordering`. Se pueden agregar múltiples bloques del mismo tipo incrementando el valor.
+
+---
+
+## Checklist de Validación
+
+Todos los bloques:
+- [ ] `parent.slug` apunta a `ecommerce-footer`
+- [ ] `categories` incluye `footer-block` y el slug del tipo específico
+- [ ] `ordering` es único y secuencial entre hermanos
+- [ ] `title` presente si se requiere encabezado visible (puede ser `null`)
+
+`footer-links`:
+- [ ] Cada item en `body.items` contiene `label` y `link`
+- [ ] Los valores de `link` son URLs válidas (relativas o absolutas)
+
+`footer-categories`:
+- [ ] Cada item en `body.items` contiene `label` y `slug`
+- [ ] Los slugs coinciden con categorías existentes en el catálogo
+
+`footer-social`:
+- [ ] Cada item en `body.items` contiene `network`, `url` y `label`
+- [ ] `network` usa uno de los valores reconocidos: `instagram`, `facebook`, `tiktok`, `twitter`, `youtube`, `pinterest`, `whatsapp`
+
+---
+
+## Notas
+
+- Todos los bloques del footer son hojas (sin hijos). Contrasta con el slider del home, que usa arquitectura parent-child.
+- El bloque `footer-social` puede repetirse para manejar múltiples grupos de redes (ej: cuentas por país o marca).
+- El campo `body` en todos los bloques del footer es siempre JSON estructurado. No aplica HTML libre.

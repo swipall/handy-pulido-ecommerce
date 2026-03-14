@@ -1,8 +1,9 @@
-import { getTaxonomies } from '@/lib/swipall/rest-adapter';
-import { TaxonomyInterface } from '@/lib/swipall/types/types';
+import { getPosts } from '@/lib/swipall/rest-adapter';
+import type { CmsPost } from '@/lib/swipall/types/types';
 import { cacheLife } from 'next/cache';
 import Image from "next/image";
-import Link from "next/link";
+import { FooterSectionRenderer } from './footer/footer-section-renderer';
+import { getFooterBlockType } from './footer/footer-section-types';
 
 
 async function Copyright() {
@@ -16,88 +17,48 @@ async function Copyright() {
     )
 }
 
-async function fetchFooterCollections() {
-    try {
-        const params = {
-            kind: 'family',
-            is_visible_on_web: true,
-        }
-        return await getTaxonomies(params);
-    } catch (error) {
-        return { results: [], count: 0, next: null, previous: null };
-    }
+const FOOTER_PARENT_SLUG = 'ecommerce-footer';
 
+async function fetchFooterBlocks() {    
+    try {
+        const postsResponse = await getPosts({ parent__slug: FOOTER_PARENT_SLUG });        
+        return (postsResponse.results ?? [])
+            .filter((post) => getFooterBlockType(post))
+            .sort((a, b) => (a.ordering ?? 0) - (b.ordering ?? 0));
+    } catch {
+        return [] as CmsPost[];
+    }
+}
+
+function getFooterGridClassName(blockCount: number) {
+    if (blockCount <= 1) {
+        return 'grid grid-cols-1 gap-8';
+    }
+    if (blockCount === 2) {
+        return 'grid grid-cols-1 md:grid-cols-2 gap-8';
+    }
+    if (blockCount === 3) {
+        return 'grid grid-cols-1 md:grid-cols-3 gap-8';
+    }
+    return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8';
 }
 
 export async function Footer() {
     'use cache'
     cacheLife('days');
-    const collections = await fetchFooterCollections();
+    const blocks = await fetchFooterBlocks();
 
     return (
         <footer className="border-t border-border mt-auto">
             <div className="container mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div>
-                        <p className="text-sm font-semibold mb-4 uppercase tracking-wider">
-                            Vendure Store
-                        </p>
+                {blocks.length > 0 ? (
+                    <div className={getFooterGridClassName(blocks.length)}>
+                        {blocks.map((post) => (
+                            <FooterSectionRenderer key={post.slug} post={post} />
+                        ))}
                     </div>
+                ) : null}
 
-                    <div>
-                        <p className="text-sm font-semibold mb-4">Categorías</p>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                            {collections.results.map((collection: TaxonomyInterface) => (
-                                <li key={collection.id}>
-                                    <Link
-                                        href={`/collection/${collection.slug}`}
-                                        className="hover:text-foreground transition-colors"
-                                    >
-                                        {collection.value}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="text-sm font-semibold mb-4">Vendure</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li>
-                                <a
-                                    href="https://github.com/vendure-ecommerce"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-foreground transition-colors"
-                                >
-                                    GitHub
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://docs.vendure.io"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-foreground transition-colors"
-                                >
-                                    Documentation
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://github.com/vendure-ecommerce/vendure"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-foreground transition-colors"
-                                >
-                                    Source code
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                {/* Bottom Section */}
                 <div
                     className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
                     <Copyright />
