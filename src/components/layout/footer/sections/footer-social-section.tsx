@@ -44,7 +44,7 @@ export function FooterSocialSection({ post }: FooterSocialSectionProps) {
                     const label = item.label ?? network;
 
                     return (
-                        <li key={`${post.slug}-social-${index}`}>
+                        <li key={`${post.slug}-social-${index}`} className="text-black">
                             <Link
                                 href={item.url!}
                                 target="_blank"

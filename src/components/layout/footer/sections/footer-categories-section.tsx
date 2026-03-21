@@ -26,7 +26,7 @@ export function FooterCategoriesSection({ post }: FooterCategoriesSectionProps) 
             {post.title ? <p className="text-sm font-semibold mb-4">{post.title}</p> : null}
             <ul className="space-y-2 text-sm text-muted-foreground">
                 {items.map((item, index) => (
-                    <li key={`${post.slug}-category-${index}`}>
+                    <li key={`${post.slug}-category-${index}`} className="text-black">
                         <Link
                             href={`/collection/${item.slug}`}
                             className="hover:text-foreground transition-colors"

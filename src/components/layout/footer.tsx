@@ -12,7 +12,7 @@ async function Copyright() {
 
     return (
         <div>
-            © {new Date().getFullYear()} Vendure Store. All rights reserved.
+            © {new Date().getFullYear()} Hanny Pulido. Todos Los Derechos Reservados.
         </div>
     )
 }
@@ -49,7 +49,7 @@ export async function Footer() {
     const blocks = await fetchFooterBlocks();
 
     return (
-        <footer className="border-t border-border mt-auto">
+        <footer className="border-t border-border mt-auto" style={{ backgroundColor: '#FFEBF7'}}>
             <div className="container mx-auto px-4 py-12">
                 {blocks.length > 0 ? (
                     <div className={getFooterGridClassName(blocks.length)}>

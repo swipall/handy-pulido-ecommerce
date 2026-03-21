@@ -26,7 +26,7 @@ export function FooterLinksSection({ post }: FooterLinksSectionProps) {
             {post.title ? <p className="text-sm font-semibold mb-4">{post.title}</p> : null}
             <ul className="space-y-2 text-sm text-muted-foreground">
                 {items.map((item, index) => (
-                    <li key={`${post.slug}-link-${index}`}>
+                    <li key={`${post.slug}-link-${index}`} className="text-black">
                         <Link
                             href={item.link!}
                             className="hover:text-foreground transition-colors"
