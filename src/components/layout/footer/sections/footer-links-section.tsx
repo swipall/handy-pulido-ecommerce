@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { CmsPost } from "@/lib/swipall/types/types";
-import { parseFooterPostBody } from "../footer-section-types";
+import { FOOTER_SECTION_KINDS, parseFooterPostBody } from "../footer-section-types";
 
 interface FooterLinksBody {
+    kind?: string;
     items?: Array<{
         label?: string;
         link?: string;
@@ -15,11 +16,24 @@ interface FooterLinksSectionProps {
 
 export function FooterLinksSection({ post }: FooterLinksSectionProps) {
     const body = parseFooterPostBody<FooterLinksBody>(post.body);
+    if (body?.kind !== FOOTER_SECTION_KINDS.Links) {
+        return null;
+    }
+
     const items = (body?.items ?? []).filter((item) => item.label && item.link);
 
     if (items.length === 0) {
         return null;
     }
+
+    const renderLabel = (label: string) => {
+        const hasHtmlTag = /<[^>]+>/.test(label);
+        if (!hasHtmlTag) {
+            return label;
+        }
+
+        return <span dangerouslySetInnerHTML={{ __html: label }} />;
+    };
 
     return (
         <div>
@@ -33,7 +47,7 @@ export function FooterLinksSection({ post }: FooterLinksSectionProps) {
                             target={item.link?.startsWith("http") ? "_blank" : undefined}
                             rel={item.link?.startsWith("http") ? "noopener noreferrer" : undefined}
                         >
-                            {item.label}
+                            {renderLabel(item.label!)}
                         </Link>
                     </li>
                 ))}

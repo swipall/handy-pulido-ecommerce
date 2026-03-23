@@ -1,26 +1,30 @@
 import type { CmsPost } from "@/lib/swipall/types/types";
 
-export const FOOTER_BLOCK_TYPES = {
-    Links: "footer-links",
-    Categories: "footer-categories",
-    Social: "footer-social",
+export const FOOTER_SECTION_KINDS = {
+    Links: "links",
+    Taxonomies: "taxonomies",
 } as const;
 
-export type FooterBlockType = (typeof FOOTER_BLOCK_TYPES)[keyof typeof FOOTER_BLOCK_TYPES];
+export type FooterSectionKind = (typeof FOOTER_SECTION_KINDS)[keyof typeof FOOTER_SECTION_KINDS];
 
-const FOOTER_TYPE_ORDER: FooterBlockType[] = [
-    FOOTER_BLOCK_TYPES.Links,
-    FOOTER_BLOCK_TYPES.Categories,
-    FOOTER_BLOCK_TYPES.Social,
-];
+interface FooterBodyBase {
+    kind?: string;
+}
 
-export function getFooterBlockType(post: CmsPost): FooterBlockType | null {
-    const categorySlugs = new Set(post.categories?.map((category) => category.slug) ?? []);
+const VALID_KINDS = new Set<FooterSectionKind>([
+    FOOTER_SECTION_KINDS.Links,
+    FOOTER_SECTION_KINDS.Taxonomies,
+]);
 
-    for (const type of FOOTER_TYPE_ORDER) {
-        if (categorySlugs.has(type)) {
-            return type;
-        }
+export function getFooterSectionKind(post: CmsPost): FooterSectionKind | null {
+    const body = parseFooterPostBody<FooterBodyBase>(post.body);
+    if (!body?.kind) {
+        return null;
+    }
+
+    const normalizedKind = body.kind.toLowerCase() as FooterSectionKind;
+    if (VALID_KINDS.has(normalizedKind)) {
+        return normalizedKind;
     }
 
     return null;

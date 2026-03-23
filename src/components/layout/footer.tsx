@@ -3,7 +3,7 @@ import type { CmsPost } from '@/lib/swipall/types/types';
 import { cacheLife } from 'next/cache';
 import Image from "next/image";
 import { FooterSectionRenderer } from './footer/footer-section-renderer';
-import { getFooterBlockType } from './footer/footer-section-types';
+import { getFooterSectionKind } from './footer/footer-section-types';
 
 
 async function Copyright() {
@@ -19,28 +19,21 @@ async function Copyright() {
 
 const FOOTER_PARENT_SLUG = 'ecommerce-footer';
 
-async function fetchFooterBlocks() {    
+async function fetchFooterBlocks() {
     try {
-        const postsResponse = await getPosts({ parent__slug: FOOTER_PARENT_SLUG });        
+        const postsResponse = await getPosts({ parent__slug: FOOTER_PARENT_SLUG });
+        console.log('postsResponse', postsResponse);
+
         return (postsResponse.results ?? [])
-            .filter((post) => getFooterBlockType(post))
+            .filter((post) => getFooterSectionKind(post))
             .sort((a, b) => (a.ordering ?? 0) - (b.ordering ?? 0));
     } catch {
         return [] as CmsPost[];
     }
 }
 
-function getFooterGridClassName(blockCount: number) {
-    if (blockCount <= 1) {
-        return 'grid grid-cols-1 gap-8';
-    }
-    if (blockCount === 2) {
-        return 'grid grid-cols-1 md:grid-cols-2 gap-8';
-    }
-    if (blockCount === 3) {
-        return 'grid grid-cols-1 md:grid-cols-3 gap-8';
-    }
-    return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8';
+function getFooterGridClassName() {
+    return 'flex flex-row flex-wrap gap-8 lg:justify-evenly md:justify-start';
 }
 
 export async function Footer() {
@@ -49,10 +42,10 @@ export async function Footer() {
     const blocks = await fetchFooterBlocks();
 
     return (
-        <footer className="border-t border-border mt-auto" style={{ backgroundColor: '#FFEBF7'}}>
+        <footer className="border-t border-border mt-auto" style={{ backgroundColor: '#FFEBF7' }}>
             <div className="container mx-auto px-4 py-12">
                 {blocks.length > 0 ? (
-                    <div className={getFooterGridClassName(blocks.length)}>
+                    <div className={getFooterGridClassName()}>
                         {blocks.map((post) => (
                             <FooterSectionRenderer key={post.slug} post={post} />
                         ))}

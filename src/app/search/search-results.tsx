@@ -1,10 +1,9 @@
-import {Suspense} from "react";
-import {FacetFilters} from "@/components/commerce/facet-filters";
-import {ProductGridSkeleton} from "@/components/shared/product-grid-skeleton";
-import {ProductGrid} from "@/components/commerce/product-grid";
-import {buildSearchInput, getCurrentPage} from "@/lib/search-helpers";
-import { searchProducts } from '@/lib/swipall/rest-adapter';
+import { ProductGrid } from "@/components/commerce/product-grid";
+import { ProductGridSkeleton } from "@/components/shared/product-grid-skeleton";
 import { getAuthUserCustomerId } from '@/lib/auth';
+import { buildSearchInput, getCurrentPage } from "@/lib/search-helpers";
+import { searchProducts } from '@/lib/swipall/rest-adapter';
+import { Suspense } from "react";
 
 interface SearchResultsProps {
     searchParams: Promise<{
@@ -24,16 +23,8 @@ export async function SearchResults({searchParams}: SearchResultsProps) {
 
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Filters Sidebar */}
-            <aside className="lg:col-span-1">
-                <Suspense fallback={<div className="h-64 animate-pulse bg-muted rounded-lg"/>}>
-                    <FacetFilters productDataPromise={productDataPromise}/>
-                </Suspense>
-            </aside>
-
-            {/* Product Grid */}
-            <div className="lg:col-span-3">
+        <div className="flex gap-8">
+            <div className="flex-1">
                 <Suspense fallback={<ProductGridSkeleton/>}>
                     <ProductGrid productDataPromise={productDataPromise} currentPage={page} take={12}/>
                 </Suspense>

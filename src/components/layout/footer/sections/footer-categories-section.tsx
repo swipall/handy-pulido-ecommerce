@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { CmsPost } from "@/lib/swipall/types/types";
-import { parseFooterPostBody } from "../footer-section-types";
+import { FOOTER_SECTION_KINDS, parseFooterPostBody } from "../footer-section-types";
 
 interface FooterCategoriesBody {
+    kind?: string;
     items?: Array<{
         label?: string;
         slug?: string;
@@ -15,6 +16,10 @@ interface FooterCategoriesSectionProps {
 
 export function FooterCategoriesSection({ post }: FooterCategoriesSectionProps) {
     const body = parseFooterPostBody<FooterCategoriesBody>(post.body);
+    if (body?.kind !== FOOTER_SECTION_KINDS.Taxonomies) {
+        return null;
+    }
+
     const items = (body?.items ?? []).filter((item) => item.label && item.slug);
 
     if (items.length === 0) {

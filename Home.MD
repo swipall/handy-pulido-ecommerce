@@ -316,29 +316,25 @@ A diferencia del home, todos los bloques del footer son hojas (sin hijos): toda 
 
 ## Tipos de Bloques
 
-| Tipo | Slug | Descripción |
-|------|------|-------------|
-| Links simples | `footer-links` | Lista de links con URLs explícitas |
-| Categorías | `footer-categories` | Links a categorías del catálogo (por slug) |
-| Redes sociales | `footer-social` | Íconos y links a perfiles de redes sociales |
+| Kind (body.kind) | Descripción |
+|------|-------------|
+| `links` | Lista de links con URL explícita. Puede usarse para links generales y redes sociales. |
+| `taxonomies` | Links a categorías del catálogo por slug. |
 
 ---
 
 ## Estructura de Cada Bloque
 
-### Links Simples
+### Links
 
-**Slug:** `footer-links`
+**body.kind:** `links`
 ```json
 {
   "slug": "ecommerce-footer-links-empresa",
   "title": "Empresa",
   "excerpt": null,
-  "body": "{\"items\": [{\"label\": \"Quiénes somos\", \"link\": \"/nosotros\"}, {\"label\": \"Contacto\", \"link\": \"/contacto\"}, {\"label\": \"Aviso de privacidad\", \"link\": \"/privacidad\"}]}",
-  "categories": [
-    { "name": "Footer", "slug": "footer-block" },
-    { "name": "Links", "slug": "footer-links" }
-  ],
+  "body": "{\"kind\": \"links\", \"items\": [{\"label\": \"Quiénes somos\", \"link\": \"/nosotros\"}, {\"label\": \"Contacto\", \"link\": \"/contacto\"}, {\"label\": \"Aviso de privacidad\", \"link\": \"/privacidad\"}]}",
+  "categories": [],
   "link": null,
   "featured_image": null,
   "ordering": 1,
@@ -351,25 +347,23 @@ A diferencia del home, todos los bloques del footer son hojas (sin hijos): toda 
 
 Campos importantes:
 - `title`: Encabezado visible de la columna
-- `body`: JSON con array `items`:
-  - `label`: Texto visible del link
+- `body`: JSON con `kind` y array `items`:
+  - `kind`: Debe ser `links`
+  - `label`: Texto visible del link. Puede ser string o HTML
   - `link`: URL destino (relativa o absoluta)
 
 ---
 
-### Categorías
+### Taxonomías
 
-**Slug:** `footer-categories`
+**body.kind:** `taxonomies`
 ```json
 {
   "slug": "ecommerce-footer-categories-shop",
   "title": "Tienda",
   "excerpt": null,
-  "body": "{\"items\": [{\"label\": \"Maquillaje\", \"slug\": \"maquillaje\"}, {\"label\": \"Perfumes\", \"slug\": \"perfumes\"}, {\"label\": \"Skincare\", \"slug\": \"skincare\"}]}",
-  "categories": [
-    { "name": "Footer", "slug": "footer-block" },
-    { "name": "Categorías", "slug": "footer-categories" }
-  ],
+  "body": "{\"kind\": \"taxonomies\", \"items\": [{\"label\": \"Maquillaje\", \"slug\": \"maquillaje\"}, {\"label\": \"Perfumes\", \"slug\": \"perfumes\"}, {\"label\": \"Skincare\", \"slug\": \"skincare\"}]}",
+  "categories": [],
   "link": null,
   "featured_image": null,
   "ordering": 2,
@@ -382,27 +376,25 @@ Campos importantes:
 
 Campos importantes:
 - `title`: Encabezado visible de la columna
-- `body`: JSON con array `items`:
+- `body`: JSON con `kind` y array `items`:
+  - `kind`: Debe ser `taxonomies`
   - `label`: Texto visible
   - `slug`: Slug de la categoría. El frontend construye la URL (ej: `/categoria/maquillaje`)
 
-> A diferencia de `footer-links`, este bloque referencia entidades del catálogo por slug. La URL la construye el renderer, no el editor de contenido.
+> A diferencia de `links`, este bloque referencia entidades del catálogo por slug. La URL la construye el renderer, no el editor de contenido.
 
 ---
 
-### Redes Sociales
+### Redes Sociales (usando `links`)
 
-**Slug:** `footer-social`
+**body.kind:** `links`
 ```json
 {
   "slug": "ecommerce-footer-social",
   "title": "Síguenos",
   "excerpt": null,
-  "body": "{\"items\": [{\"network\": \"instagram\", \"url\": \"https://instagram.com/mitienda\", \"label\": \"@mitienda\"}, {\"network\": \"facebook\", \"url\": \"https://facebook.com/mitienda\", \"label\": \"Mi Tienda\"}, {\"network\": \"tiktok\", \"url\": \"https://tiktok.com/@mitienda\", \"label\": \"@mitienda\"}]}",
-  "categories": [
-    { "name": "Footer", "slug": "footer-block" },
-    { "name": "Social", "slug": "footer-social" }
-  ],
+  "body": "{\"kind\": \"links\", \"items\": [{\"label\": \"<i class='icon-instagram'></i> @mitienda\", \"link\": \"https://instagram.com/mitienda\"}, {\"label\": \"<i class='icon-facebook'></i> Mi Tienda\", \"link\": \"https://facebook.com/mitienda\"}, {\"label\": \"<i class='icon-tiktok'></i> @mitienda\", \"link\": \"https://tiktok.com/@mitienda\"}]}",
+  "categories": [],
   "link": null,
   "featured_image": null,
   "ordering": 3,
@@ -415,19 +407,18 @@ Campos importantes:
 
 Campos importantes:
 - `title`: Encabezado visible de la sección
-- `body`: JSON con array `items`:
-  - `network`: Identificador de la red. El renderer lo mapea al ícono correspondiente. Valores reconocidos: `instagram`, `facebook`, `tiktok`, `twitter`, `youtube`, `pinterest`, `whatsapp`
-  - `url`: URL completa del perfil
-  - `label`: Handle o texto alternativo visible
+- `body`: JSON con `kind: links` y array `items`:
+  - `label`: Texto o HTML del item
+  - `link`: URL completa del perfil
 
 ---
 
 ## Orden Recomendado
 ```
-ordering: 1 → footer-categories  → "Tienda"
-ordering: 2 → footer-links       → "Empresa"
-ordering: 3 → footer-links       → "Ayuda"
-ordering: 4 → footer-social      → "Síguenos"
+ordering: 1 → taxonomies         → "Tienda"
+ordering: 2 → links              → "Empresa"
+ordering: 3 → links              → "Ayuda"
+ordering: 4 → links              → "Síguenos"
 ```
 
 Los bloques se renderizan de izquierda a derecha según `ordering`. Se pueden agregar múltiples bloques del mismo tipo incrementando el valor.
@@ -438,26 +429,25 @@ Los bloques se renderizan de izquierda a derecha según `ordering`. Se pueden ag
 
 Todos los bloques:
 - [ ] `parent.slug` apunta a `ecommerce-footer`
-- [ ] `categories` incluye `footer-block` y el slug del tipo específico
 - [ ] `ordering` es único y secuencial entre hermanos
 - [ ] `title` presente si se requiere encabezado visible (puede ser `null`)
+- [ ] `body.kind` es `links` o `taxonomies`
 
-`footer-links`:
+`links`:
+- [ ] `body.kind` es `links`
 - [ ] Cada item en `body.items` contiene `label` y `link`
 - [ ] Los valores de `link` son URLs válidas (relativas o absolutas)
 
-`footer-categories`:
+`taxonomies`:
+- [ ] `body.kind` es `taxonomies`
 - [ ] Cada item en `body.items` contiene `label` y `slug`
 - [ ] Los slugs coinciden con categorías existentes en el catálogo
-
-`footer-social`:
-- [ ] Cada item en `body.items` contiene `network`, `url` y `label`
-- [ ] `network` usa uno de los valores reconocidos: `instagram`, `facebook`, `tiktok`, `twitter`, `youtube`, `pinterest`, `whatsapp`
 
 ---
 
 ## Notas
 
 - Todos los bloques del footer son hojas (sin hijos). Contrasta con el slider del home, que usa arquitectura parent-child.
-- El bloque `footer-social` puede repetirse para manejar múltiples grupos de redes (ej: cuentas por país o marca).
-- El campo `body` en todos los bloques del footer es siempre JSON estructurado. No aplica HTML libre.
+- Se pueden agregar múltiples bloques con el mismo `body.kind` (por ejemplo varios `links`).
+- Las redes sociales se modelan con `body.kind: links`.
+- El campo `body` en todos los bloques del footer es JSON estructurado. En `links`, `label` puede ser texto o HTML.
