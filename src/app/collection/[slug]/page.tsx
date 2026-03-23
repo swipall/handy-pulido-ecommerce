@@ -22,7 +22,6 @@ async function getCollectionProducts(slug: string, searchParams: { [key: string]
         searchParams,
         taxonomies__slug__and: slug,
     });
-    console.log(params);
 
     const results = await searchProducts(params, customerId);
     return results;
@@ -82,20 +81,16 @@ export default async function CollectionPage({ params, searchParams }: PageProps
 
     const customerId = await getAuthUserCustomerId();
     const productDataPromise = getCollectionProducts(slug, searchParamsResolved, customerId);
-    const taxonomies = await getTaxonomies({ parent: slug });
-    console.log(taxonomies);
+    const taxonomies = await getTaxonomies({ parent__slug: slug });
     
     return (
-        <div className="container mx-auto px-4 py-8 mt-16 bg-gray-100">
+        <div className="container mt-16 bg-gray-100">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                {/* Filters Sidebar */}
                 <aside className="lg:col-span-1">
                     <Suspense fallback={<div className="h-64 animate-pulse bg-muted rounded-lg" />}>
                         <FacetFilters taxonomies={taxonomies.results} searchParams={searchParamsResolved} />
                     </Suspense>
                 </aside>
-
-                {/* Product Grid */}
                 <div className="lg:col-span-3">
                     <Suspense fallback={<ProductGridSkeleton />}>
                         <ProductGrid productDataPromise={productDataPromise} currentPage={page} take={12} />
